@@ -3,17 +3,19 @@
 /**
  * print_most_numbers - prints numbers from 0 to 9
  * skipping 2 and 4, followed by a new line.
+ *
+ * Return: void
  */
 void print_most_numbers(void)
 {
-        int n;
+	int n;
 
 	for (n = '0'; n <= '9'; n++)
 	{
-		if ( n != '2' && n != '4')
+		if (n != '2' && n != '4')
 		{
 			_putchar(n);
 		}
 	}
-	 _putchar('\n');
+	_putchar('\n');
 }
