@@ -2,54 +2,40 @@
 #include <stdlib.h>
 
 /**
- * read_textfile - reads a text file and prints it to the POSIX standard output
- * @filename: name of the file to read
- * @letters: number of letters it should read and print
+ * read_textfile - reads a text file and prints it to POSIX stdout
+ * @filename: name of the file
+ * @letters: number of letters to read and print
  *
- * Return: actual number of letters it could read and print, or 0 on failure
+ * Return: actual number of letters read and printed, or 0 on failure
  */
 ssize_t read_textfile(const char *filename, size_t letters)
 {
 	int fd;
-	char *buffer;
-	ssize_t bytes_read, bytes_written;
+	char *buf;
+	ssize_t r, w;
 
-	if (filename == NULL)
+	if (!filename)
 		return (0);
-
-	/* Allocate buffer for the specified number of letters */
-	buffer = malloc(sizeof(char) * letters);
-	if (buffer == NULL)
+	buf = malloc(sizeof(char) * letters);
+	if (!buf)
 		return (0);
-
-	/* Open the file */
 	fd = open(filename, O_RDONLY);
 	if (fd == -1)
 	{
-		free(buffer);
+		free(buf);
 		return (0);
 	}
-
-	/* Read from the file */
-	bytes_read = read(fd, buffer, letters);
-	if (bytes_read == -1)
+	r = read(fd, buf, letters);
+	if (r == -1)
 	{
-		free(buffer);
+		free(buf);
 		close(fd);
 		return (0);
 	}
-
-	/* Write to standard output (STDOUT_FILENO is 1) */
-	bytes_written = write(STDOUT_FILENO, buffer, bytes_read);
-	if (bytes_written == -1 || bytes_written != bytes_read)
-	{
-		free(buffer);
-		close(fd);
-		return (0);
-	}
-
-	free(buffer);
+	w = write(STDOUT_FILENO, buf, r);
+	free(buf);
 	close(fd);
-
-	return (bytes_written);
+	if (w == -1 || w != r)
+		return (0);
+	return (w);
 }
