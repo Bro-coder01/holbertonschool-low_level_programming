@@ -3,12 +3,14 @@
 #include <fcntl.h>
 #include <unistd.h>
 
+void close_file(int fd);
+
 /**
  * main - copies the content of a file to another file
  * @argc: number of arguments
  * @argv: array of arguments
  *
- * Return: 0 on success, or exit with specific codes on failure
+ * Return: 0 on success
  */
 int main(int argc, char *argv[])
 {
@@ -46,15 +48,23 @@ int main(int argc, char *argv[])
 		dprintf(STDERR_FILENO, "Error: Can't read from file %s\n", argv[1]);
 		exit(98);
 	}
-	if (close(fd_from) == -1)
-	{
-		dprintf(STDERR_FILENO, "Error: Can't close fd %d\n", fd_from);
-		exit(100);
-	}
-	if (close(fd_to) == -1)
-	{
-		dprintf(STDERR_FILENO, "Error: Can't close fd %d\n", fd_to);
-		exit(100);
-	}
+	close_file(fd_from);
+	close_file(fd_to);
 	return (0);
+}
+
+/**
+ * close_file - closes a file descriptor and handles errors
+ * @fd: the file descriptor to close
+ */
+void close_file(int fd)
+{
+	int c;
+
+	c = close(fd);
+	if (c == -1)
+	{
+		dprintf(STDERR_FILENO, "Error: Can't close fd %d\n", fd);
+		exit(100);
+	}
 }
